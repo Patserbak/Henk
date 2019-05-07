@@ -25,8 +25,7 @@
 <script type="text/javascript">
 
     // Link to calculate distance
-    //https://physics.stackexchange.com/questions/36312/calculation-of-distance-from-measured-acceleration-vs-time?fbclid=IwAR3rP7BuuDrpfpgzdXPB4m-xsXKA68dxTx9uoGgZ0Vj36ZSQiZ9GNmW-8Ow
-    // gyronorm.js
+    //jj // gyronorm.js
     var x = 0, y = 0, ax1 =0 ,ax2 =0, vx1 = 0, vx2 = 0, dx1 = 0, dx2 =0,ay1 =0 ,ay2 =0, vy1 = 0, vy2 = 0, dy1= 0, dy2 = 0;
     var interval = 25;
 
@@ -35,8 +34,6 @@
         y = 0;
     }
 
-    var sphere = document.getElementById("sphere");
-
     if (window.DeviceMotionEvent != undefined) {
         window.ondevicemotion = function(e) {
 
@@ -44,7 +41,7 @@
             document.getElementById("accelerationY").innerHTML = e.accelerationIncludingGravity.y;
             document.getElementById("accelerationZ").innerHTML = e.accelerationIncludingGravity.z;
 
-            if ( e.rotationRate ) {
+            if (e.rotationRate) {
                 document.getElementById("rotationAlpha").innerHTML = e.rotationRate.alpha;
                 document.getElementById("rotationBeta").innerHTML = e.rotationRate.beta;
                 document.getElementById("rotationGamma").innerHTML = e.rotationRate.gamma;
@@ -56,35 +53,35 @@
             ay1 = ay2
             ay2 = e.accelerationIncludingGravity.y;
 
+
+            var kfX = new KalmanFilter();
+            var kfY = new KalmanFilter();
+            setInterval(function () {
+
+                alert("Max")
+                
+                vx2 = vx1 + (interval) * (ax1 + ax2) / 2;
+                dx2 = dx1 + (ax2 - ax1) * (vx1 + vx2) / 2;
+
+                vy2 = vy1 + (interval) * (ay1 + ay2) / 2;
+                dy2 = dy1 + (ay2 - ay1) * (vy1 + vy2) / 2;
+
+
+                document.getElementById("distanceX").innerHTML = kfX.filter(dx2);
+                document.getElementById("distanceY").innerHTML = kfY.filter(dy2);
+
+                vx1 = vx2
+                dx1 = dx2
+
+                vy1 = vy2
+                dy1 = dy2
+
+            }, interval);
         }
-
-        alert("aa")
-        var kfX = new KalmanFilter();
-        var kfY = new KalmanFilter();
-        setInterval( function() {
-
-            vx2=vx1+(interval)*(ax1+ax2)/2;
-            dx2 = dx1+(ax2-ax1)*(vx1+vx2)/2;
-
-            vy2=vy1+(interval)*(ay1+ay2)/2;
-            dy2 = dy1+(ay2-ay1)*(vy1+vy2)/2;
-
-
-//             document.getElementById("distanceX").innerHTML = kfX.filter(dx2);
-            document.getElementById("distanceX").innerHTML = 444;
-
-            document.getElementById("distanceY").innerHTML = kfY.filter(dy2);
-            alert("b")
-            vx1 = vx2
-            dx1 = dx2
-
-            vy1 = vy2
-            dy1 = dy2
-
-        }, 25);
     }
 
 </script>
 
 </body>
 </html>
+
